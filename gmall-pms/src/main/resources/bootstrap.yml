@@ -1,0 +1,9 @@
+
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: 7a0722af-5a05-41d7-8996-4464d36c3292
+  application:
+    name: pms-service
