@@ -1,5 +1,5 @@
+mvnw*
 .mvn/
-.mvnw*
 .idea/
 # Compiled class file
 *.class
