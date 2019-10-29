@@ -3,7 +3,6 @@ package com.atguigu.gmall.gateway.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
-
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
@@ -30,7 +29,6 @@ public class CorsConfig {
         //添加映射路径,拦截一切请求
         UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/**",configuration);
-
 
         return new CorsWebFilter(corsConfigurationSource);
     }
