@@ -9,6 +9,7 @@ import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.core.bean.Resp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,15 @@ import com.atguigu.gmall.pms.service.AttrService;
 public class AttrController {
     @Autowired
     private AttrService attrService;
+
+    @ApiOperation("根据条件分页查询")
+    @GetMapping
+    public Resp<PageVo> queryByCidTypePage(@RequestParam("cid")Long cid,
+                                           @RequestParam(value = "type",required = false)Integer type,QueryCondition condition){
+        PageVo pageVo = attrService.queryByCidTypePage(cid,type,condition);
+        return Resp.ok(pageVo);
+    }
+
 
     /**
      * 列表

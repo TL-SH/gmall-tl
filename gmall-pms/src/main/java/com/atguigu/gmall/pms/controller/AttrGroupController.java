@@ -23,7 +23,6 @@ import com.atguigu.gmall.pms.service.AttrGroupService;
  * 属性分组
  *
  * @author leishuai
- * @email lxf@atguigu.com
  * @date 2019-10-28 20:21:21
  */
 @Api(tags = "属性分组 管理")
@@ -33,6 +32,12 @@ public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;
 
+    @ApiOperation("根据三级分类id查询分页")
+    @GetMapping("{catId}")
+    public Resp<PageVo> queryByCidPage(@PathVariable(value = "catId")Long catId,QueryCondition condition){
+        PageVo pageVo = attrGroupService.queryByCidPage(catId,condition);
+        return Resp.ok(pageVo);
+    }
     /**
      * 列表
      */
