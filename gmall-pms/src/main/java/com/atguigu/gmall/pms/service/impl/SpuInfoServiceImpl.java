@@ -12,6 +12,7 @@ import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.gmall.pms.dao.SpuInfoDao;
 import com.atguigu.gmall.pms.entity.SpuInfoEntity;
 import com.atguigu.gmall.pms.service.SpuInfoService;
+import org.springframework.util.StringUtils;
 
 
 @Service("spuInfoService")
@@ -24,6 +25,28 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 new QueryWrapper<SpuInfoEntity>()
         );
 
+        return new PageVo(page);
+    }
+
+    @Override
+    public PageVo querySpuInfoByKeyPage(Long catId, QueryCondition condition) {
+        QueryWrapper<SpuInfoEntity> wrapper = new QueryWrapper<>();
+
+        //判断cid是否为空
+        if (catId != 0) {
+            wrapper.eq("catelog_id",catId);
+        }
+
+        //判断key是否为空
+        String key = condition.getKey();
+        if(!StringUtils.isEmpty(key)){
+            wrapper.and(t->t.eq("id",key).or().like("spu_name",key));
+        }
+
+        IPage<SpuInfoEntity> page = this.page(
+                new Query<SpuInfoEntity>().getPage(condition),
+                wrapper
+        );
         return new PageVo(page);
     }
 

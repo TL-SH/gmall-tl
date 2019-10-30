@@ -16,5 +16,13 @@ import com.atguigu.core.bean.QueryCondition;
 public interface SpuInfoService extends IService<SpuInfoEntity> {
 
     PageVo queryPage(QueryCondition params);
+
+    /**
+     * 查询善品的列表
+     * @param catId
+     * @param condition
+     * @return
+     */
+    PageVo querySpuInfoByKeyPage(Long catId, QueryCondition condition);
 }
 

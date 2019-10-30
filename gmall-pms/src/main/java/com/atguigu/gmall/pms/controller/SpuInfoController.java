@@ -7,6 +7,7 @@ import java.util.Map;
 import com.atguigu.core.bean.PageVo;
 import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.core.bean.Resp;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,17 @@ import com.atguigu.gmall.pms.service.SpuInfoService;
 public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;
+
+
+    @ApiOperation("查询商品的列表")
+    @GetMapping
+    public Resp<PageVo> querySpuInfoByKeyPage(@RequestParam(value = "catId",defaultValue = "0")Long catId,QueryCondition condition){
+
+        PageVo pageVo = spuInfoService.querySpuInfoByKeyPage(catId,condition);
+
+        return Resp.ok(pageVo);
+    }
+
 
     /**
      * 列表
