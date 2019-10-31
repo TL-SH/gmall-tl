@@ -34,7 +34,7 @@ public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;
 
-
+    @ApiOperation("根据三级分类查询分组及组下的信息")
     @GetMapping("withattrs/cat/{catId}")
     public Resp<List<AttrGroupVO>> queryGroupWithAttrsByCid(@PathVariable(value = "catId")Long catId){
         List<AttrGroupVO> attrGroupVOList = this.attrGroupService.queryGroupWithAttrsByCid(catId);
@@ -45,9 +45,7 @@ public class AttrGroupController {
     @ApiOperation("根据分组id查询分组以下的规格数据")
     @GetMapping("withattr/{gid}")
     public Resp<AttrGroupVO> queryById(@PathVariable(value = "gid")Long gid){
-
         AttrGroupVO attrGroupVO =attrGroupService.queryById(gid);
-
         return Resp.ok(attrGroupVO);
     }
 

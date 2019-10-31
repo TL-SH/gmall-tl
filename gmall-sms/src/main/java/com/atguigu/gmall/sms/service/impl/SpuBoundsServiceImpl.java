@@ -1,7 +1,11 @@
 package com.atguigu.gmall.sms.service.impl;
 
+import com.atguigu.gmall.sms.dao.SkuFullReductionDao;
+import com.atguigu.gmall.sms.dao.SkuLadderDao;
+import com.atguigu.gmall.sms.entity.SkuBoundsEntity;
+import com.atguigu.gmall.sms.vo.SaleVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,6 +21,7 @@ import com.atguigu.gmall.sms.service.SpuBoundsService;
 @Service("spuBoundsService")
 public class SpuBoundsServiceImpl extends ServiceImpl<SpuBoundsDao, SpuBoundsEntity> implements SpuBoundsService {
 
+
     @Override
     public PageVo queryPage(QueryCondition params) {
         IPage<SpuBoundsEntity> page = this.page(
@@ -26,5 +31,7 @@ public class SpuBoundsServiceImpl extends ServiceImpl<SpuBoundsDao, SpuBoundsEnt
 
         return new PageVo(page);
     }
+
+
 
 }
