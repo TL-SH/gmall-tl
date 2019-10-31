@@ -34,6 +34,11 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
      */
     AttrGroupVO queryById(Long gid);
 
+    /**
+     * 根据三级分类查询分组及组下的规格数据
+     * @param catId
+     * @return
+     */
     List<AttrGroupVO> queryGroupWithAttrsByCid(Long catId);
 }
 
