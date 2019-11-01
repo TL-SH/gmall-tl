@@ -1,6 +1,5 @@
 package com.atguigu.gmall.pms.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
@@ -19,10 +18,10 @@ import java.util.Map;
  * @author tanglei
  */
 @RestController
-@RequestMapping("pms")
+@RequestMapping("pms/oss")
 public class OSSController {
 
-    @GetMapping("oss/policy")
+    @GetMapping("policy")
     public Resp<Object> policy(){
         String accessId = "LTAI4FmPREjaYsXciatx3QQc"; // 请填写您的AccessKeyId。
         String accessKey = "MbxDpE0voFT9V07rPrA1oIlf3ydOvp"; // 请填写您的AccessKeySecret。
