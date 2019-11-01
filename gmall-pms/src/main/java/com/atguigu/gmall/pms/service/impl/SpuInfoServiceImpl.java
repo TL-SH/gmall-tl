@@ -82,30 +82,22 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     public void bigSave(SpuInfoVO spuInfoVO) {
         //1.新增spu三张表
         //1.1   新增spuInfo
-        spuInfoVO.setCreateTime(new Date());
-        spuInfoVO.setUodateTime(spuInfoVO.getCreateTime());
-        this.save(spuInfoVO);
+        saveSpunInfo(spuInfoVO);
         // 获取spuId
         Long spuId = spuInfoVO.getId();
+
         //1.2   新增spuInfoDesc
-        List<String> spuImages = spuInfoVO.getSpuImages();
-        String desc = StringUtils.join(spuImages, ",");
-        SpuInfoDescEntity spuInfoDescEntity = new SpuInfoDescEntity();
-        spuInfoDescEntity.setSpuId(spuId);
-        spuInfoDescEntity.setDecript(desc);
-        this.spuInfoDescDao.insert(spuInfoDescEntity);
+        saveSpuInfoDesc(spuInfoVO, spuId);
 
         //1.3   新增基本属性productAttrValue
-        List<ProductAttrValueVO> baseAttrs = spuInfoVO.getBaseAttrs();
-        baseAttrs.forEach(baseAttr -> {
-            baseAttr.setSpuId(spuId);
-            baseAttr.setAttrSort(0);
-            baseAttr.setQuickShow(1);
-            this.productAttrValueDao.insert(baseAttr);
-        });
+        saveProductAttrValue(spuInfoVO, spuId);
 
         //2.新增sku相关的三张表 必须得有spuId
+        saveSku(spuInfoVO, spuId);
 
+    }
+
+    public void saveSku(SpuInfoVO spuInfoVO, Long spuId) {
         List<SkuInfoVO> skus = spuInfoVO.getSkus();
         if(CollectionUtils.isEmpty(skus)){
             return;
@@ -155,7 +147,31 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             this.smsClient.saveSale(saleVO);
 
         });
+    }
 
+    public void saveProductAttrValue(SpuInfoVO spuInfoVO, Long spuId) {
+        List<ProductAttrValueVO> baseAttrs = spuInfoVO.getBaseAttrs();
+        baseAttrs.forEach(baseAttr -> {
+            baseAttr.setSpuId(spuId);
+            baseAttr.setAttrSort(0);
+            baseAttr.setQuickShow(1);
+            this.productAttrValueDao.insert(baseAttr);
+        });
+    }
+
+    public void saveSpuInfoDesc(SpuInfoVO spuInfoVO, Long spuId) {
+        List<String> spuImages = spuInfoVO.getSpuImages();
+        String desc = StringUtils.join(spuImages, ",");
+        SpuInfoDescEntity spuInfoDescEntity = new SpuInfoDescEntity();
+        spuInfoDescEntity.setSpuId(spuId);
+        spuInfoDescEntity.setDecript(desc);
+        this.spuInfoDescDao.insert(spuInfoDescEntity);
+    }
+
+    public void saveSpunInfo(SpuInfoVO spuInfoVO) {
+        spuInfoVO.setCreateTime(new Date());
+        spuInfoVO.setUodateTime(spuInfoVO.getCreateTime());
+        this.save(spuInfoVO);
     }
 
 }
