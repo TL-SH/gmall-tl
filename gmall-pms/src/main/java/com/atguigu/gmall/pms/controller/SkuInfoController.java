@@ -25,8 +25,6 @@ import com.atguigu.gmall.pms.service.SkuInfoService;
  * sku信息
  *
  * @author leishuai
- * @email lxf@atguigu.com
- * @date 2019-10-28 20:21:21
  */
 @Api(tags = "sku信息 管理")
 @RestController
