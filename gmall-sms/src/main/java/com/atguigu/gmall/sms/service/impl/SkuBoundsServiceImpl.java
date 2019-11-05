@@ -39,7 +39,7 @@ public class SkuBoundsServiceImpl extends ServiceImpl<SkuBoundsDao, SkuBoundsEnt
         return new PageVo(page);
     }
 
-    @Transactional
+    //@Transactional
     @Override
     public void saveSale(SaleVO saleVO) {
         //3.1  积分优惠 skuBounds

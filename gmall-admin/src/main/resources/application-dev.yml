@@ -7,7 +7,7 @@ spring:
         password: 871190
         druid:
             initial-size: 10
-            max-active: 100
+            max-active: 1000
             min-idle: 10
             max-wait: 60000
             pool-prepared-statements: true

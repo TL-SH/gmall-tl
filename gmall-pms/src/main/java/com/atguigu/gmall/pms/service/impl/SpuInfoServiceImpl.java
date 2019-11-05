@@ -79,7 +79,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         return new PageVo(page);
     }
 
-    @GlobalTransactional
+    //@GlobalTransactional
     @Override
     public void bigSave(SpuInfoVO spuInfoVO) {
         //1.新增spu三张表
@@ -132,53 +132,52 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     public void saveSku(SpuInfoVO spuInfoVO, Long spuId) {
         List<SkuInfoVO> skus = spuInfoVO.getSkus();
-        if(CollectionUtils.isEmpty(skus)){
+        if (CollectionUtils.isEmpty(skus)){
             return;
         }
         skus.forEach(skuInfoVO -> {
-            //2.1   新增skuInfo基本信息
-
+            // 2.1. 新增skuInfo
             SkuInfoEntity skuInfoEntity = new SkuInfoEntity();
-            BeanUtils.copyProperties(skuInfoVO,skuInfoEntity);
-            skuInfoEntity.setBrandId(skuInfoVO.getBrandId());
-            skuInfoEntity.setCatalogId(skuInfoVO.getCatalogId());
+            BeanUtils.copyProperties(skuInfoVO, skuInfoEntity);
+            skuInfoEntity.setBrandId(spuInfoVO.getBrandId());
+            skuInfoEntity.setCatalogId(spuInfoVO.getCatalogId());
             skuInfoEntity.setSkuCode(UUID.randomUUID().toString());
             skuInfoEntity.setSpuId(spuId);
             List<String> images = skuInfoVO.getImages();
-            //设置默认图片
-            if(!CollectionUtils.isEmpty(images)){
-                skuInfoEntity.setSkuDefaultImg(StringUtils.isNotBlank(skuInfoEntity.getSkuDefaultImg())?skuInfoEntity.getSkuDefaultImg():images.get(0));
+            // 设置默认图片
+            if (!CollectionUtils.isEmpty(images)){
+                skuInfoEntity.setSkuDefaultImg(StringUtils.isNotBlank(skuInfoEntity.getSkuDefaultImg()) ? skuInfoEntity.getSkuDefaultImg() : images.get(0));
             }
             this.skuInfoDao.insert(skuInfoEntity);
-            //获取skuId
             Long skuId = skuInfoEntity.getSkuId();
-            //2.2   新增sku的图片信息
-            if(!CollectionUtils.isEmpty(images)){
+
+            // 2.2. 新增sku的图片
+            if (!CollectionUtils.isEmpty(images)){
                 images.forEach(image -> {
                     SkuImagesEntity skuImagesEntity = new SkuImagesEntity();
                     skuImagesEntity.setSkuId(skuId);
+                    skuImagesEntity.setDefaultImg(StringUtils.equals(image, skuInfoEntity.getSkuDefaultImg()) ? 1 : 0);
                     skuImagesEntity.setImgSort(0);
-                    skuImagesEntity.setDefaultImg(StringUtils.equals(image,skuInfoEntity.getSkuDefaultImg())?1:0);
                     skuImagesEntity.setImgUrl(image);
                     this.skuImagesDao.insert(skuImagesEntity);
                 });
-
             }
-            //2.3   新增sku的规格参数(销售属性)
+
+            // 2.3. 新增销售属性
             List<SkuSaleAttrValueEntity> saleAttrs = skuInfoVO.getSaleAttrs();
-            if(!CollectionUtils.isEmpty(saleAttrs)){
-                saleAttrs.forEach(saleAttr ->{
+            if (!CollectionUtils.isEmpty(saleAttrs)){
+                saleAttrs.forEach(saleAttr -> {
                     saleAttr.setSkuId(skuId);
                     saleAttr.setAttrSort(0);
                     this.skuSaleAttrValueDao.insert(saleAttr);
                 });
             }
-            //3.新增营销相关信息的三张表,需要远程调用gmall-sms
+
+            // 3.新增营销相关的3张表 skuId
             SaleVO saleVO = new SaleVO();
-            BeanUtils.copyProperties(skuInfoVO,saleVO);
+            BeanUtils.copyProperties(skuInfoVO, saleVO);
             saleVO.setSkuId(skuId);
             this.smsClient.saveSale(saleVO);
-
         });
     }
 
