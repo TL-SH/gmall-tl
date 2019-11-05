@@ -164,6 +164,8 @@ class GmallSearchApplicationTests {
 
         DocumentResult result = jestClient.execute(action);
         System.out.println(result.toString());
+
+
     }
 
     /**
@@ -175,7 +177,6 @@ class GmallSearchApplicationTests {
 //        Get action = new Get.Builder("user", "1").build();
 //        DocumentResult result = jestClient.execute(action);
 //        System.out.println(result.getSourceAsObject(User.class,false));
-
 
         //查询多个
         String query = "{\n" +
