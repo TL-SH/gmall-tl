@@ -7,8 +7,8 @@ import com.atguigu.gmall.pms.vo.ProductAttrValueVO;
 import com.atguigu.gmall.pms.vo.SkuInfoVO;
 import com.atguigu.gmall.pms.vo.SpuInfoVO;
 import com.atguigu.gmall.sms.vo.SaleVO;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +20,8 @@ import com.atguigu.core.bean.Query;
 import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.gmall.pms.service.SpuInfoService;
 import org.springframework.util.CollectionUtils;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+
+import java.util.*;
 
 
 @Service("spuInfoService")
@@ -45,6 +44,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     private GmallSmsClient smsClient;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
 
     @Override
@@ -97,9 +99,22 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         //2.新增sku相关的三张表 必须得有spuId
         saveSku(spuInfoVO, spuId);
 
-        //int i = 1/0;
+        //发送消息给es 实现数据同步
+        sendMsg(spuId,"insert");
 
+        //int i = 1/0;
     }
+    //封装发送信息的公用方法
+    public void sendMsg(Long spuId,String type) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id",spuId);
+        map.put("type",type);
+        amqpTemplate.convertAndSend("GMALL-ITEM-EXCHANGE","item."+type,map);
+    }
+
+
+
+
 
     public void saveSpunInfo(SpuInfoVO spuInfoVO) {
         spuInfoVO.setCreateTime(new Date());

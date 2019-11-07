@@ -1,0 +1,6 @@
+spring:
+  rabbitmq:
+    host: 121.199.40.167
+    username: leishuai
+    password: 871190
+    virtual-host: /leishuai

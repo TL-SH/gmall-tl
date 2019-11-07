@@ -4,7 +4,12 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 121.199.40.167:8848
+        server-addr: 127.0.0.1:8848
   elasticsearch:
     jest:
       uris: http://121.199.40.167:9200
+  rabbitmq:
+    host: 121.199.40.167
+    username: leishuai
+    password: 871190
+    virtual-host: /leishuai
