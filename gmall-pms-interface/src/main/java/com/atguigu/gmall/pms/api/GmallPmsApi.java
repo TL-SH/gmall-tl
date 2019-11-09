@@ -6,11 +6,9 @@ import com.atguigu.gmall.pms.entity.BrandEntity;
 import com.atguigu.gmall.pms.entity.CategoryEntity;
 import com.atguigu.gmall.pms.entity.SkuInfoEntity;
 import com.atguigu.gmall.pms.entity.SpuInfoEntity;
+import com.atguigu.gmall.pms.vo.CategoryVO;
 import com.atguigu.gmall.pms.vo.SpuAttributeValueVO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -52,6 +50,26 @@ public interface GmallPmsApi {
      */
     @GetMapping("pms/category/info/{catId}")
     public Resp<CategoryEntity> queryCategoryById(@PathVariable("catId") Long catId);
+
+    /**
+     * 根据分类等级或者父类的id来查询
+     * @param level
+     * @param parentCid
+     * @return
+     */
+    @GetMapping("pms/category")
+    public Resp<List<CategoryEntity>> queryCategory(
+            @RequestParam(value = "level",required = false,defaultValue = "0")Integer level,
+            @RequestParam(value = "parentCid",required = false)Long parentCid );
+
+
+    /**
+     * 父类id查询二级分类以及子类
+     * @param pid
+     * @return
+     */
+    @GetMapping("pms/category/{pid}")
+    public Resp<List<CategoryVO>> querySubCategory(@PathVariable("pid") Long pid);
 
 
     /**

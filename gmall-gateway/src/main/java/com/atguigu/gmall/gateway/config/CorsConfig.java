@@ -18,6 +18,7 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         //允许请求的域,不要写* ,不然无法保存cookie
         configuration.addAllowedOrigin("http://localhost:1000");
+        configuration.addAllowedOrigin("http://localhost:2000");
         //允许请求的头
         configuration.addAllowedHeader("*");
         //允许的请求的方法
