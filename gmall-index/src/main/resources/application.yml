@@ -16,8 +16,8 @@ hystrix:
           enabled: true
         isolation:
           thread:
-            timeoutInMilliseconds: 9000
+            timeoutInMilliseconds: 90000
 #ribbon的超时时间
 ribbon:
-  ReadTimeout: 3000
-  ConnectTimeout: 3000
+  ReadTimeout: 7000
+  ConnectTimeout: 7000

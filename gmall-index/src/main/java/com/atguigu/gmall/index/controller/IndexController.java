@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -37,7 +38,8 @@ public class IndexController {
     }
 
     @GetMapping("testLock")
-    public Resp<Object> testLocke(){
+    public Resp<Object> testLocke(HttpServletRequest request){
+        System.out.println("端口号:"+request.getLocalPort());
         String msg = this.indexService.testLock();
         return Resp.ok(msg);
     }
@@ -58,4 +60,15 @@ public class IndexController {
         return Resp.ok(msg);
     }
 
+    @GetMapping("latch")
+    public Resp<Object> latch() throws InterruptedException {
+        String msg = this.indexService.latch();
+        return Resp.ok(msg);
+    }
+
+    @GetMapping("out")
+    public Resp<Object> out(){
+        String msg = this.indexService.out();
+        return Resp.ok(msg);
+    }
 }
