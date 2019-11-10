@@ -18,4 +18,12 @@
         select * from pms_product_attr_value a inner join pms_attr b on a.attr_id = b.attr_id
         where a.spu_id = #{spuId} and b.search_type = 1
     </select>
+
+    <select id="queryByCidAndSpuId" resultMap="productAttrValueMap">
+        select b.* from pms_attr_attrgroup_relation a inner join
+        pms_product_attr_value b on a.attr_id = b.attr_id
+        where a.attr_group_id = #{groupId} and b.spu_id = #{spuId}
+    </select>
+
+
 </mapper>
