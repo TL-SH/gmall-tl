@@ -53,7 +53,7 @@ public class CacheAspect {
 
         String key = prefix+":"+args;
         
-        // 2.查询缓存
+        // 2.查询缓存 如果缓存中就直接返回
         Object result = this.cacheHit(key, returnType);
         if (result != null) {
             return result;
