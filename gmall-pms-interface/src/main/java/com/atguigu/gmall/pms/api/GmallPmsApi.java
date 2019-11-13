@@ -14,10 +14,16 @@ import java.util.List;
  * @author tanglei
  */
 public interface GmallPmsApi {
-
+    /**
+     * 根据skuId查询 SkuSaleAttrValueEntity
+     * @param skuId
+     * @return
+     */
+    @GetMapping("pms/skusaleattrvalue/sku/{skuId}")
+    public Resp<List<SkuSaleAttrValueEntity>> querySaleAttrBySkuId(@PathVariable("skuId")Long skuId);
 
     /**
-     * 根据skuId查询skuInfoEntity
+     * 根据skuId查询 skuInfoEntity
      * @param skuId
      * @return
      */
@@ -25,7 +31,7 @@ public interface GmallPmsApi {
     public Resp<SkuInfoEntity> querySkuById(@PathVariable("skuId") Long skuId);
 
     /**
-     * 根据spuId查询spuInfoEntity
+     * 根据spuId查询 spuInfoEntity
      * @param id
      * @return
      */

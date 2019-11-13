@@ -8,6 +8,7 @@ import java.util.Map;
 import com.atguigu.core.bean.PageVo;
 import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.core.bean.Resp;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,9 @@ import com.atguigu.gmall.pms.entity.SkuSaleAttrValueEntity;
 import com.atguigu.gmall.pms.service.SkuSaleAttrValueService;
 
 
-
-
 /**
  * sku销售属性&值
- *
  * @author leishuai
- * @email lxf@atguigu.com
- * @date 2019-10-28 20:21:21
  */
 @Api(tags = "sku销售属性&值 管理")
 @RestController
@@ -33,6 +29,15 @@ import com.atguigu.gmall.pms.service.SkuSaleAttrValueService;
 public class SkuSaleAttrValueController {
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
+
+
+    @GetMapping("sku/{skuId}")
+    public Resp<List<SkuSaleAttrValueEntity>> querySaleAttrBySkuId(@PathVariable("skuId")Long skuId){
+        List<SkuSaleAttrValueEntity> skuSaleAttrValueEntityList = this.skuSaleAttrValueService.list(new QueryWrapper<SkuSaleAttrValueEntity>().eq("sku_id",skuId));
+        return Resp.ok(skuSaleAttrValueEntityList);
+    }
+
+
 
     /**
      * 根据spuId查询销售属性
