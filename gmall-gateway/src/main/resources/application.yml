@@ -39,3 +39,20 @@ spring:
             - Path=/api/index/**
           filters:
             - RewritePath=/api(?<segment>/?.*), $\{segment}
+        - id: item-route
+          uri: lb://item-service
+          predicates:
+            - Path=/api/item/**
+          filters:
+            - RewritePath=/api(?<segment>/?.*), $\{segment}
+        - id: auth-route
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - RewritePath=/api(?<segment>/?.*), $\{segment}
+
+auth:
+  jwt:
+    publicKeyPath: D:\\packageLocal\\ideaWorkHome\temp\\rsa.pub
+    cookieName: GMALL_TOKEN

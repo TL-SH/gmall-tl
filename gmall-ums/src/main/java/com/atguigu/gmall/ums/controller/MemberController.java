@@ -16,12 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import com.atguigu.gmall.ums.entity.MemberEntity;
 import com.atguigu.gmall.ums.service.MemberService;
 
-
-
-
 /**
  * 会员
- *
  * @author leishuai
  * @email 2258010965@qq.com
  * @date 2019-10-28 20:32:25
