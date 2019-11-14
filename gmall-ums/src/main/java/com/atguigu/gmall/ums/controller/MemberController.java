@@ -7,6 +7,7 @@ import java.util.Map;
 import com.atguigu.core.bean.PageVo;
 import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.core.bean.Resp;
+import com.atguigu.gmall.ums.feign.GmallMmsClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,15 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private GmallMmsClient gmallMmsClient;
 
+    /**
+     * 根据用户名密码查询用户信息
+     * @param username
+     * @param password
+     * @return
+     */
     @ApiOperation("根据用户名密码查询用户信息")
     @GetMapping("query")
     public Resp<MemberEntity> queryUser(@RequestParam("username")String username,@RequestParam("password")String password){
@@ -37,7 +46,16 @@ public class MemberController {
         return Resp.ok(memberEntity);
     }
 
-
+    /**
+     * 发送短信验证码
+     * @param phone
+     * @return
+     */
+    @GetMapping("code")
+    public Resp<Object> sendsms(@RequestParam("phone")String phone){
+        this.gmallMmsClient.sendSms(phone);
+        return Resp.ok("验证码发送成功");
+    }
 
     /**
      * 注册
