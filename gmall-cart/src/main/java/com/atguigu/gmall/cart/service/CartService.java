@@ -6,7 +6,8 @@ import com.atguigu.gmall.cart.feign.GmallPmsClient;
 import com.atguigu.gmall.cart.feign.GmallSmsClient;
 import com.atguigu.gmall.cart.interceptor.LoginInterceptor;
 import com.atguigu.gmall.cart.vo.Cart;
-import com.atguigu.gmall.cart.vo.UserInfo;
+import com.atguigu.core.bean.UserInfo;
+import com.atguigu.gmall.cart.vo.CartItemVO;
 import com.atguigu.gmall.pms.entity.SkuInfoEntity;
 import com.atguigu.gmall.pms.entity.SkuSaleAttrValueEntity;
 import com.atguigu.gmall.sms.vo.ItemSaleVO;
@@ -16,7 +17,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +38,8 @@ public class CartService {
     private GmallSmsClient gmallSmsClient;
 
     public static final String KEY_PREFIX="cart:key:";
+
+    public static final String CURRENT_PRICE_PREFIX="cart:price:";
 
     public void addCart(Cart cart) {
         String key = getKey();
@@ -66,6 +71,9 @@ public class CartService {
             Resp<List<ItemSaleVO>> listResp = this.gmallSmsClient.queryItemSaleVOs(cart.getSkuId());
             cart.setSales(listResp.getData());
 
+            //将当前的价格同步到redis
+            this.redisTemplate.opsForValue().set(CURRENT_PRICE_PREFIX+skuId,skuInfoEntity.getPrice().toString());
+
         }
         //同步到redis中
         hashOps.put(skuId,JSON.toJSONString(cart));
@@ -83,7 +91,13 @@ public class CartService {
         List<Object> cartJsonList = hashOps.values();
         List<Cart> userKeyCarts = null;
         if(!CollectionUtils.isEmpty(cartJsonList)){
-            userKeyCarts = cartJsonList.stream().map(catJson-> JSON.parseObject(catJson.toString(),Cart.class)).collect(Collectors.toList());
+            userKeyCarts = cartJsonList.stream().map(catJson-> {
+                Cart cart = JSON.parseObject(catJson.toString(), Cart.class);
+
+                //查询当前的价格
+                cart.setCurrentPrice(new BigDecimal(this.redisTemplate.opsForValue().get(CURRENT_PRICE_PREFIX+cart.getSkuId())));
+                return cart;
+            }).collect(Collectors.toList());
         }
         // 判断登录状态
         if(userInfo.getUserId()==null){
@@ -117,10 +131,22 @@ public class CartService {
         //查询返回
         // 查询返回
         List<Object> userIdCartJsonList = userIdOps.values();
-        return userIdCartJsonList.stream().map(userIdCartJson -> JSON.parseObject(userIdCartJson.toString(), Cart.class)).collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(userIdCartJsonList)){
+            return null;
+        }
+        return userIdCartJsonList.stream().map(userIdCartJson -> {
+            Cart cart = JSON.parseObject(userIdCartJson.toString(), Cart.class);
+            cart.setCurrentPrice(new BigDecimal(this.redisTemplate.opsForValue().get(CURRENT_PRICE_PREFIX+cart.getSkuId())));
+            return cart;
+        }).collect(Collectors.toList());
 
     }
 
+
+
+
+
+    //修改购物车
     public void updateCart(Cart cart) {
         String key = getKey();
         Integer count = cart.getCount();
@@ -136,6 +162,7 @@ public class CartService {
 
     }
 
+    //删除购物车
     public void deleteCart(Long skuId) {
         String key = getKey();
         BoundHashOperations<String, Object, Object> hashOps = this.redisTemplate.boundHashOps(key);
@@ -172,6 +199,29 @@ public class CartService {
             key+=userInfo.getUserKey();
         }
         return key;
+    }
+
+
+    public List<CartItemVO> queryCartItemVO(Long userId) {
+        //登录,查询登录状态的购物车
+        String key = KEY_PREFIX+userId;
+        BoundHashOperations<String, Object, Object> hashOps = this.redisTemplate.boundHashOps(key);
+        //查询返回
+        List<Object> userIdCartJsonList = hashOps.values();
+        if(CollectionUtils.isEmpty(userIdCartJsonList)){
+            return null;
+        }
+        // 获取所有购物车的记录
+        return userIdCartJsonList.stream().map(userIdCartJson->{
+            Cart cart = JSON.parseObject(userIdCartJson.toString(), Cart.class);
+            cart.setCurrentPrice(new BigDecimal(this.redisTemplate.opsForValue().get(CURRENT_PRICE_PREFIX+cart.getSkuId())));
+            return cart;
+        }).filter(cart -> cart.getCheck()).map(cart -> {
+            CartItemVO cartItemVO = new CartItemVO();
+            cartItemVO.setSkuId(cart.getSkuId());
+            cartItemVO.setCount(cart.getCount());
+            return cartItemVO;
+        }).collect(Collectors.toList());
     }
 
 

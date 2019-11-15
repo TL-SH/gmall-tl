@@ -6,7 +6,7 @@ import lombok.Data;
  * @author tanglei
  */
 @Data
-public class UserInfo {
-    private Long userId;
-    private String userKey;
+public class CartItemVO {
+    private Long skuId;
+    private Integer count;
 }
