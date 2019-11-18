@@ -24,5 +24,14 @@ public interface OrderService extends IService<OrderEntity> {
      * @return
      */
     OrderEntity createOrder(OrderSubmitVO orderSubmitVO);
+
+    /**
+     * 修改订单的状态
+     * @param orderToken
+     * @return
+     */
+    int closeOrder(String orderToken);
+
+    int success(String orderToken);
 }
 

@@ -22,4 +22,6 @@ public interface WareSkuDao extends BaseMapper<WareSkuEntity> {
     int lock(@Param("id") Long id,@Param("count") Integer count);
 
     int unlock(@Param("id") Long id,@Param("count") Integer count);
+
+    int minus(@Param("id") Long id,@Param("count") Integer count);
 }

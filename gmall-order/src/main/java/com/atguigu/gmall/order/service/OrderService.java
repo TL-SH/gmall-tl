@@ -9,6 +9,7 @@ import com.atguigu.gmall.oms.vo.OrderSubmitVO;
 import com.atguigu.gmall.order.feign.*;
 import com.atguigu.gmall.order.interceptor.LoginInterceptor;
 import com.atguigu.gmall.order.vo.OrderConfirmVO;
+import com.atguigu.gmall.order.vo.PayAsyncVo;
 import com.atguigu.gmall.pms.entity.SkuInfoEntity;
 import com.atguigu.gmall.pms.entity.SkuSaleAttrValueEntity;
 import com.atguigu.gmall.sms.vo.ItemSaleVO;
@@ -143,7 +144,7 @@ public class OrderService {
         return orderConfirmVO;
     }
 
-    public void submit(OrderSubmitVO orderSubmitVO) {
+    public OrderEntity submit(OrderSubmitVO orderSubmitVO) {
         //1.验证令牌防止重复提交
         String orderToken = orderSubmitVO.getOrderToken();
         String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
@@ -179,16 +180,20 @@ public class OrderService {
         if (objectResp.getCode() == 1) {
             throw new RuntimeException(objectResp.getMsg());
         }
+
         //4.生成订单
         UserInfo userInfo = LoginInterceptor.get();
+        Resp<OrderEntity> orderResp = null;
         try {
             orderSubmitVO.setUserId(userInfo.getUserId());
             Resp<MemberEntity> memberEntityResp = this.gmallUmsClient.queryUserById(userInfo.getUserId());
             MemberEntity memberEntity = memberEntityResp.getData();
             orderSubmitVO.setUserName(memberEntity.getUsername());
-            Resp<OrderEntity> orderResp = this.gmallOmsClient.createOrder(orderSubmitVO);
+            orderResp = this.gmallOmsClient.createOrder(orderSubmitVO);
+
         } catch (Exception e) {
             e.printStackTrace();
+            //this.amqpTemplate.convertAndSend("WMS-EXCHANGE","wms.ttl",orderToken);
             throw new RuntimeException("订单创建失败,服务器异常!");
         }
 
@@ -199,5 +204,19 @@ public class OrderService {
         map.put("skuIds",skuIds);
         this.amqpTemplate.convertAndSend("GMALL-ORDER-EXCHANGE","cart.delete",map);
 
+        if(orderResp != null){
+            return orderResp.getData();
+        }
+        return null;
+    }
+
+
+    public void paySuccess(String out_trade_no) {
+        this.amqpTemplate.convertAndSend("GMALL-ORDER-EXCHANGE", "order.pay", out_trade_no);
+    }
+
+
+    public OrderEntity queryOrder() {
+        return null;
     }
 }

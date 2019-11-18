@@ -9,19 +9,17 @@ import com.atguigu.gmall.oms.vo.OrderItemVO;
 import com.atguigu.gmall.oms.vo.OrderSubmitVO;
 import com.atguigu.gmall.pms.entity.SkuInfoEntity;
 import com.atguigu.gmall.ums.entity.MemberReceiveAddressEntity;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.core.bean.PageVo;
 import com.atguigu.core.bean.Query;
 import com.atguigu.core.bean.QueryCondition;
-
 import com.atguigu.gmall.oms.dao.OrderDao;
 import com.atguigu.gmall.oms.entity.OrderEntity;
 import com.atguigu.gmall.oms.service.OrderService;
@@ -35,7 +33,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private OrderItemDao orderItemDao;
 
     @Autowired
+    private OrderDao orderDao;
+
+
+
+    @Autowired
     private GmallPmsClient gmallPmsClient;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Override
     public PageVo queryPage(QueryCondition params) {
@@ -99,11 +105,24 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 itemEntity.setCategoryId(skuInfoEntity.getCatalogId());
                 itemEntity.setSkuAttrsVals(JSON.toJSONString(itemVO.getSkuAttrValue()));
                 itemEntity.setSkuPrice(skuInfoEntity.getPrice());
-                //
+
                 orderItemDao.insert(itemEntity);
             });
         }
+        // 发送消息
+        this.amqpTemplate.convertAndSend("OMS-EXCHANGE","oms.close",submitVO.getOrderToken());
+
         return orderEntity;
+    }
+
+    @Override
+    public int closeOrder(String orderToken) {
+        return this.orderDao.closeOrder(orderToken);
+    }
+
+    @Override
+    public int success(String orderToken) {
+        return this.orderDao.success(orderToken);
     }
 
 }

@@ -13,5 +13,20 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface OrderDao extends BaseMapper<OrderEntity> {
-	
+
+    /**
+     * 关闭订单
+     * @param orderToken
+     * @return
+     */
+    int closeOrder(String orderToken);
+
+    /**
+     * 支付成功,修改订单的状态为待发货
+     * @param orderToken
+     * @return
+     */
+    int success(String orderToken);
+
+
 }

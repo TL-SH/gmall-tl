@@ -7,5 +7,10 @@ spring:
         namespace: 11d28491-e5c3-4c89-ad26-4a020513bb80
         group: dev
         file-extension: yml
+  rabbitmq:
+    host: 121.199.40.167
+    username: leishuai
+    password: 871190
+    virtual-host: /leishuai
   application:
     name: wms-service
