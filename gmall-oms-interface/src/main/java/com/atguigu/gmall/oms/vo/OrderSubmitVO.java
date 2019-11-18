@@ -1,4 +1,4 @@
-package com.atguigu.gmall.order.vo;
+package com.atguigu.gmall.oms.vo;
 
 import com.atguigu.gmall.ums.entity.MemberReceiveAddressEntity;
 import lombok.Data;
@@ -11,6 +11,10 @@ import java.util.List;
  */
 @Data
 public class OrderSubmitVO {
+
+    private Long userId;
+    private String userName;
+
     // 收货地址
     private MemberReceiveAddressEntity address;
     // 支付方式
@@ -18,7 +22,7 @@ public class OrderSubmitVO {
     // 配送公司(配送方式)
     private String deliveryCompany;
     //订单详情
-    private List<OrderItemVO> orderItemVOS;
+    private List<OrderItemVO> orderItems;
     //下单时使用的积分
     private Integer useIntegration;
     //总价,用于验价

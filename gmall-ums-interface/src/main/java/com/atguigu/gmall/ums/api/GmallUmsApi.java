@@ -21,7 +21,7 @@ public interface GmallUmsApi {
      * @return
      */
     @GetMapping("ums/member/info/{id}")
-    public Resp<MemberEntity> info(@PathVariable("id") Long id);
+    public Resp<MemberEntity> queryUserById(@PathVariable("id") Long id);
 
     /**
      * 根据userId查询地址信息
