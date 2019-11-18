@@ -27,4 +27,8 @@
     </resultMap>
 
 
+    <update id="updateIntegrationAndGrowth">
+        update ums_member set growth=ifnull(growth,0)+#{grouth},integration=ifnull(integration,0)+#{integration} where  = #{userId};
+    </update>
+
 </mapper>

@@ -12,7 +12,11 @@ spring:
     password: 871190
   redis:
     host: 121.199.40.167
-
+  rabbitmq:
+    host: 121.199.40.167
+    username: leishuai
+    password: 871190
+    virtual-host: /leishuai
 mybatis-plus:
   mapper-locations: classpath:mapper/ums/**/*.xml # 读取映射文件
   global-config:

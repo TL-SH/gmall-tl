@@ -31,6 +31,10 @@ public class WareListener {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
+    /**
+     * 锁库
+     * @param orderToken
+     */
     @RabbitListener(queues = {"WMS-DEAD-QUEUE"})
     public void unlock(String orderToken){
 
@@ -50,6 +54,11 @@ public class WareListener {
         this.redisTemplate.delete("order:token:"+orderToken);
     }
 
+
+    /**
+     * 减库存
+     * @param orderToken
+     */
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "WMS-STOCK-QUEUE", durable = "true"),
             exchange = @Exchange(value = "WMS-EXCHANGE", ignoreDeclarationExceptions = "true", type = ExchangeTypes.TOPIC),

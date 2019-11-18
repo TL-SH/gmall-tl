@@ -56,7 +56,8 @@ public class OmsListener {
             userBoundVO.setUserId(orderEntity.getMemberId());
             userBoundVO.setGrouth(orderEntity.getGrowth());
             userBoundVO.setIntegration(orderEntity.getIntegration());
-            this.amqpTemplate.convertAndSend("ums-exchange", "user.bound", userBoundVO);
+            // 设置积分
+            this.amqpTemplate.convertAndSend("UMS-EXCHANGE", "user.bound", userBoundVO);
         }
     }
 }
